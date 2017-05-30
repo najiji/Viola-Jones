@@ -16,7 +16,7 @@ Original    Integral
 class IntegralImage:
 
     def __init__(self, imageSrc, label):
-        self.original = np.array(Image.open(imageSrc))
+        self.original = np.array(Image.open(imageSrc).resize((25,25)))
         self.sum = 0
         self.label = label
         self.calculate_integral()
@@ -42,8 +42,8 @@ class IntegralImage:
         '''
         
         # swap tuples
-        topLeft = (topLeft[1], topLeft[0])
-        bottomRight = (bottomRight[1], bottomRight[0])
+        topLeft = (int(topLeft[1]), int(topLeft[0]))
+        bottomRight = (int(bottomRight[1]), int(bottomRight[0]))
         if topLeft == bottomRight:
             return self.integral[topLeft]
         topRight = (bottomRight[0], topLeft[1])

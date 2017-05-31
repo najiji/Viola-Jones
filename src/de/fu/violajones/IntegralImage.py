@@ -16,7 +16,7 @@ Original    Integral
 class IntegralImage:
 
     def __init__(self, imageSrc, label):
-        self.original = np.array(Image.open(imageSrc).resize((25,25)))
+        self.original = np.array(Image.open(imageSrc))
         self.sum = 0
         self.label = label
         self.calculate_integral()

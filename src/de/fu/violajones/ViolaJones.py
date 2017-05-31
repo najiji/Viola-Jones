@@ -20,11 +20,12 @@ if __name__ == "__main__":
     
     # TODO: select optimal threshold for each feature
     # TODO: attentional cascading
-    
+    faces = []
+    non_faces = []
     print('Loading faces..')
-    faces = load_images('train/face', 1)
+#    faces = load_images('train/face', 1)
     print('..done. ' + str(len(faces)) + ' faces loaded.\n\nLoading non faces..')
-    non_faces = load_images('train/non-face', -1)
+#    non_faces = load_images('train/non-face', -1)
     print('..done. ' + str(len(non_faces)) + ' non faces loaded.\n')
     
     T = 3000
@@ -35,9 +36,6 @@ if __name__ == "__main__":
     print('..done. ' + str(len(faces)) + ' faces loaded.\n\nLoading test non faces..')
     non_faces = load_images('test/non-face', -1)
     print('..done. ' + str(len(non_faces)) + ' non faces loaded.\n')
-
-    with open('classifiers_' + str(T) + '_' + hex(random.getrandbits(16)) + '.pckl', 'wb') as file:
-        pickle.dump(classifiers, file)
 
     print('Validating selected classifiers..')
     correct_faces = 0

@@ -30,6 +30,7 @@ def learn(positives, negatives, T):
                 images.append(img)
         images = np.array(images)
 
+
     else:
         print('Generating data from scratch')
         # construct initial weights
@@ -67,10 +68,10 @@ def learn(positives, negatives, T):
             if i % 1000 == 0:
                 print(str(i) + ' features of ' + str(len(features)) + ' done')
 
-            # pickle our work from before
-            print('storing generated votes..')
-            with open('votes.pkl', 'wb') as file:
-                pickle.dump(votes, file)
+        # pickle our work from before
+        print('storing generated votes..')
+        with open('votes.pkl', 'wb') as file:
+            pickle.dump(votes, file)
 
     print('..done.\n')
 
@@ -112,7 +113,7 @@ def learn(positives, negatives, T):
         print("")
         # get best feature, i.e. with smallest error
         errors = list(classification_errors.keys())
-        best_error = errors[np.argmin(errors)]
+        best_error = np.min(errors)
         feature = classification_errors[best_error]
         used.append(feature)
         feature_weight = 0.5 * np.log((1-best_error)/best_error)

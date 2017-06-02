@@ -49,9 +49,3 @@ class IntegralImage:
         topRight = (bottomRight[0], topLeft[1])
         bottomLeft = (topLeft[0], bottomRight[1])
         return self.integral[bottomRight] - self.integral[topRight] - self.integral[bottomLeft] + self.integral[topLeft] 
-    
-    def set_label(self, label):
-        self.label = label
-    
-    def set_weight(self, weight):
-        self.weight = weight

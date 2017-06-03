@@ -39,3 +39,4 @@ train
 *.pkl
 *.pckl
 viola_env
+.idea

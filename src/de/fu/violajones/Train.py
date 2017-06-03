@@ -9,10 +9,14 @@ import pickle
 
 N_CPUS = cpu_count()
 
-def load_images(path, label):
+def load_images(path, reduction, label):
     images = []
+    i = 0
     for _file in os.listdir(path):
         if _file.endswith('.pgm'):
+            i += 1
+            if i > reduction:
+                break
             images.append(IntegralImage(os.path.join(path, _file), label))
     return images
 
@@ -47,22 +51,22 @@ def feature_eval(feature, used):
     Tp = 0
     Tn = 0
     for img_arg in np.nditer(sorted_img_args):
-        if labels[img_arg] == 0:
-            Tn += w[img_arg]
-        else:
+        if labels[img_arg] == 1:
             Tp += w[img_arg]
+        else:
+            Tn += w[img_arg]
         Sn[img_arg] = Tn
         Sp[img_arg] = Tp
 
     # compute the formula for the threshold
-    nerror = Sp + (Tn - Sn)  # error of classifying everything negative below threshold
-    perror = Sn + (Tp - Sp)  # error of classifying everything positive below threshold
-    error = np.minimum(perror, nerror)  # find minimum
+    standard_class_error = Sp + (Tn - Sn)  # error of classifying everything negative below threshold (0 polarity)
+    inverse_class_error = Sn + (Tp - Sp)  # error of classifying everything positive below threshold (1 polarity)
+    error = np.minimum(standard_class_error, inverse_class_error)  # find minimum
     best_threshold_img = np.argmin(error)  # find the image with the threshold
     best_local_error = error[best_threshold_img]
     feature.threshold = scores[best_threshold_img]  # use the score we estimated for the image as new threshold
     # assign new polarity, based on above calculations
-    feature.polarity = 1 if nerror[best_threshold_img] < perror[best_threshold_img] else -1
+    feature.polarity = standard_class_error[best_threshold_img] > inverse_class_error[best_threshold_img]
 
     # store the error to find best feature
     return feature, best_local_error
@@ -128,19 +132,19 @@ def train(positive, negative, T):
 
         if (round+1) % 10 == 0:
             with open('classifiers.pkl', 'wb') as file:
-                pickle.dump(final_classifiers)
+                pickle.dump(final_classifiers, file)
 
 
 def main():
     RED = 1000
 
     print('Loading faces..')
-    faces = load_images('train/face', 1)
-    print('..done. %d faces loaded, reducing to %d' % (len(faces), RED))
+    faces = load_images('train/face', RED, 1)
+    print('..done. %d faces loaded.' % (len(faces)))
     faces = faces[:RED]
     print('Loading non-faces')
-    non_faces = load_images('train/non-face', 0)
-    print('..done. %d non faces loaded, reducing to %d' % (len(non_faces), RED))
+    non_faces = load_images('train/non-face', RED, 0)
+    print('..done. %d non faces loaded.' % (len(non_faces)))
     non_faces = non_faces[:RED]
     T = 300
     train(faces, non_faces, T)

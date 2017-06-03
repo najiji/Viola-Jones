@@ -1,30 +1,44 @@
-from de.fu.violajones.ViolaJones import load_images
 import os
 import pickle
+from de.fu.violajones.IntegralImage import IntegralImage
+
+
+def load_images(path, reduction, label):
+    images = []
+    i = 0
+    for _file in os.listdir(path):
+        if _file.endswith('.pgm'):
+            i += 1
+            if i > reduction:
+                break
+            images.append(IntegralImage(os.path.join(path, _file), label))
+    return images
 
 
 def classify(classifiers, image):
-    evidence = sum([max(c[0].get_vote(image), 0.) * c[1] for c in classifiers])
+    evidence = sum([c[0].get_vote(image) * c[1] for c in classifiers])
     weight_sum = sum([c[1] for c in classifiers])
 
-    return 1 if evidence >= weight_sum/2 else -1
+    return 1 if float(evidence) >= weight_sum/2 else 0
 
 
 def main():
     print('Loading classifiers')
-    if os.path.isfile('classifiers.pckl'):
-        with open('classifiers.pckl', 'rb') as file:
+    if os.path.isfile('classifiers.pkl'):
+        with open('classifiers.pkl', 'rb') as file:
             classifiers = pickle.load(file)
             print('loaded %d classifiers'%len(classifiers))
     else:
         print('No classifiers file found')
         return
 
+    RED = 1000
     print('Loading test faces..')
-    faces = load_images('test/face', 1)
+    faces = load_images('test/face', RED, 1)
     print('..done. ' + str(len(faces)) + ' faces loaded.\n\nLoading test non faces..')
-    non_faces = load_images('test/non-face', -1)
+    non_faces = load_images('test/non-face', RED, 0)
     print('..done. ' + str(len(non_faces)) + ' non faces loaded.\n')
+
 
     print('Validating selected classifiers..')
     correct_faces = 0
@@ -33,7 +47,7 @@ def main():
         result = classify(classifiers, image)
         if image.label == 1 and result == 1:
             correct_faces += 1
-        if image.label == -1 and result == -1:
+        if image.label == 0 and result == 0:
             correct_non_faces += 1
 
     print('..done. Result:\n  Faces: ' + str(correct_faces) + '/' + str(len(faces)) + '\n  non-Faces: ' + str(
@@ -49,6 +63,7 @@ def main():
     recall = TP / (TP + FN)
 
     print('-------------------------------')
+    print('TP: %d, FP: %d, TN: %d, FN: %d' % (TP, FP, TN, FN))
     print('classfication rate: %.5f' % CR)
     print('precision: %.5f (If we say true, how likely is it to be the case)' % precision)
     print('recall: %.5f (If an example is true, how likely are we are going to find it)' % recall)

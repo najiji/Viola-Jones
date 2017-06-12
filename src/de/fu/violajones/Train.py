@@ -91,11 +91,7 @@ def train(positive, negative, T):
     w[n_pos:] = 1./(2*n_neg)
 
     # generate features
-    features = generate_features(20)
-
-    # generate error list
-#    n_features = len(features)
-#    errors = np.zeros(n_features)
+    features = generate_features(19)
 
     # ADABoost loop -------------------
     for round in range(T):
@@ -130,13 +126,16 @@ def train(positive, negative, T):
         # store final classifier
         final_classifiers.append((copy.deepcopy(best_feature), alpha))
 
-        if (round+1) % 10 == 0:
+        if (round+1) % 10 == 0 or round < 10:
             with open('classifiers.pkl', 'wb') as file:
                 pickle.dump(final_classifiers, file)
 
+            with open('w.pkl', 'wb') as file:
+                pickle.dump(w, file)
+
 
 def main():
-    RED = 1000
+    RED = 100000
 
     print('Loading faces..')
     faces = load_images('train/face', RED, 1)
@@ -146,7 +145,7 @@ def main():
     non_faces = load_images('train/non-face', RED, 0)
     print('..done. %d non faces loaded.' % (len(non_faces)))
     non_faces = non_faces[:RED]
-    T = 300
+    T = 3000
     train(faces, non_faces, T)
 
 if __name__ == '__main__':

@@ -16,7 +16,7 @@ Original    Integral
 class IntegralImage:
 
     def __init__(self, imageSrc, label):
-        self.original = np.array(Image.open(imageSrc))
+        self.original = np.array(Image.open(imageSrc), dtype='float64')
         self.sum = 0
         self.label = label
         self.calculate_integral()
@@ -48,4 +48,4 @@ class IntegralImage:
             return self.integral[topLeft]
         topRight = (bottomRight[0], topLeft[1])
         bottomLeft = (topLeft[0], bottomRight[1])
-        return self.integral[bottomRight] - self.integral[topRight] - self.integral[bottomLeft] + self.integral[topLeft] 
+        return self.integral[bottomRight] - self.integral[topRight] - self.integral[bottomLeft] + self.integral[topLeft]

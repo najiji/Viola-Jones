@@ -63,5 +63,5 @@ class HaarLikeFeature(object):
 
     def get_vote(self, img):
         score = self.get_score(img)
-        return self.polarity != (score > self.threshold)
+        return self.polarity != (score >= self.threshold)
 

@@ -12,7 +12,7 @@ def print_classifier(classifier):
     height = classifier[0].height
     width = classifier[0].width
     tlx, tly = classifier[0].top_left
-    mask = np.zeros((20, 20))
+    mask = np.zeros((19, 19))
     if classifier[0].type == (1,2):
         for x in range(tlx, tlx+width):
             for y in range(tly, tly+height//2):
@@ -66,8 +66,8 @@ def print_classifier(classifier):
             for y in range(tly + height//2, tly+height):
                 mask[x, y] = 1 - 2*classifier[0].polarity
 
-    for y in range(20):
-        for x in range(20):
+    for y in range(19):
+        for x in range(19):
             char = '.'
             if mask[x, y] == 1:
                 char = '+'
@@ -126,9 +126,10 @@ def get_performance(classifiers):
 
 
 def main():
+    cls_file = 'classifiers_120_sym.pkl'
     print('Loading classifiers')
-    if os.path.isfile('classifiers.pkl'):
-        with open('classifiers_1240.pkl', 'rb') as file:
+    if os.path.isfile(cls_file):
+        with open(cls_file, 'rb') as file:
             classifiers = pickle.load(file)
             print('loaded %d classifiers'%len(classifiers))
             classifiers.sort(key=lambda x: x[1], reverse=True)
@@ -141,9 +142,9 @@ def main():
     RED = 100000
     print('Loading test faces..')
     global faces, non_faces
-    faces = load_images('test/face', RED, 1)
+    faces = load_images('train/face', RED, 1)
     print('..done. ' + str(len(faces)) + ' faces loaded.\n\nLoading test non faces..')
-    non_faces = load_images('test/non-face', RED, 0)
+    non_faces = load_images('train/non-face', RED, 0)
     print('..done. ' + str(len(non_faces)) + ' non faces loaded.\n')
 
 
@@ -159,7 +160,7 @@ def main():
     print('recall: %.5f (If an example is true, how likely are we are going to find it)' % recall)
     print('-------------------------------')
 
-    perf_values = Parallel(n_jobs=N_CPUS, verbose=1)(delayed(get_performance)(classifiers[:i]) for i in range(1, len(classifiers), 100))
+    perf_values = Parallel(n_jobs=N_CPUS, verbose=1)(delayed(get_performance)(classifiers[:i]) for i in range(1, len(classifiers), 1))
     perf_values = list(map(list, zip(*perf_values)))
 
     plt.plot(perf_values[4], label='Classification rate')

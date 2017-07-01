@@ -1,12 +1,8 @@
 import numpy as np
-from HaarLikeFeature import FeatureType
-from HaarLikeFeature import HaarLikeFeature
-from de.fu.violajones.HaarLikeFeature import FeatureTypes
+from HaarLikeFeature import FeatureTypes
 import sys
 import pickle
 import os
-from pympler import summary, muppy
-
 
 class AdaBoost(object):
     '''

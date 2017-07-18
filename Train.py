@@ -1,5 +1,5 @@
-from de.fu.violajones.IntegralImage import IntegralImage
-from de.fu.violajones.HaarLikeFeature import FeatureTypes, HaarLikeFeature
+from IntegralImage import IntegralImage
+from HaarLikeFeature import FeatureTypes, HaarLikeFeature
 import numpy as np
 from joblib import Parallel, delayed, cpu_count
 from joblib.pool import has_shareable_memory

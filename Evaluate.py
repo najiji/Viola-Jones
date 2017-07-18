@@ -1,6 +1,6 @@
 import os
 import pickle
-from de.fu.violajones.IntegralImage import IntegralImage
+from IntegralImage import IntegralImage
 import matplotlib.pyplot as plt
 from joblib import Parallel, delayed, cpu_count
 import numpy as np
